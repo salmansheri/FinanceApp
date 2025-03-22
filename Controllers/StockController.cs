@@ -34,7 +34,7 @@ namespace Backend.Controllers
             return Ok(stockDTO);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetStock([FromRoute] int id)
         {
             if (id <= 0 ) {
@@ -68,7 +68,7 @@ namespace Backend.Controllers
             
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateStock([FromRoute] int id, [FromBody] UpdateStockRequestDTO upatedStock)
         {
             var stockModel = await _stockInterface.UpdateStockAsync(id, upatedStock);
@@ -80,7 +80,7 @@ namespace Backend.Controllers
             return Ok(stockModel.ToStockDTO()); 
 
         }
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async  Task<IActionResult> DeleteStock([FromRoute] int id)
         {
             var stockModel = await _stockInterface.DeleteStockAsync(id); 
