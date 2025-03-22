@@ -1,5 +1,6 @@
 using Backend.Data;
 using Backend.DTO;
+using Backend.Helpers;
 using Backend.Interfaces;
 using Backend.Models;
 
@@ -44,9 +45,29 @@ namespace Backend.Repositories
 
         }
 
-        public async Task<List<Stock>> GetStocksAsync()
+        public async Task<List<Stock>> GetStocksAsync(QueryObject query)
         {
-            return await _context.Stock.Include(s => s.Comment).ToListAsync();
+            var stocks = _context.Stock.Include(s => s.Comment).AsQueryable(); 
+
+            if (!string.IsNullOrWhiteSpace(query.CompanyName))
+            {
+                stocks = stocks.Where(s => s.CompanyName.Contains(query.CompanyName));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Symbol))
+            {
+                stocks = stocks.Where(s => s.Symbol.Contains(query.Symbol)); 
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Symbol", StringComparison.OrdinalIgnoreCase))
+                {
+                    stocks = query.IsDescending ? stocks.OrderByDescending(s => s.Symbol) : stocks.OrderBy(s => s.Symbol); 
+                }
+            }
+
+            return await stocks.ToListAsync(); 
         }
 
         public Task<bool> StockExists(int id)

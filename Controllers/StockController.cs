@@ -1,5 +1,6 @@
 using Backend.Data;
 using Backend.DTO;
+using Backend.Helpers;
 using Backend.Interfaces;
 using Backend.Mappers;
 using Backend.Models;
@@ -27,9 +28,9 @@ namespace Backend.Controllers
         
 
         [HttpGet]
-        public async Task<IActionResult> GetStocks()
+        public async Task<IActionResult> GetStocks([FromQuery] QueryObject query)
         {
-            var stocks = await _stockInterface.GetStocksAsync();
+            var stocks = await _stockInterface.GetStocksAsync(query);
             var stockDTO = stocks.Select(s => s.ToStockDTO());
             return Ok(stockDTO);
         }
